@@ -19,7 +19,11 @@ import tableFile
 
 def main():
 	# Open file
-	tFile = tableFile.tableFile(sys.argv[1])
+	try:
+		tFile = tableFile.tableFile(sys.argv[1])
+	except:
+		print "Usage:\npython datatable.py <filename>"
+		
 	# Run editor
 	#tEditor = tableEditor(tFile)
 	
