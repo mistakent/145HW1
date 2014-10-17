@@ -1,4 +1,4 @@
-import curses, time
+import curses, time, copy
 
 class TableEditor(object):
 	"""
@@ -10,6 +10,9 @@ class TableEditor(object):
 	def __init__(self, tFile, display):
 		self.tFile = tFile
 		self.display = display
+		self.history = []
+		# Add to history
+		self.history.append(copy.deepcopy(self.tFile))
 
 	def run(self):
 		self.display.draw()
@@ -22,6 +25,7 @@ class TableEditor(object):
 			elif c == 'a': self.add()
 			elif c == 'd': self.remove()
 			elif c == 's': self.tFile.writeFile()
+			elif c == 'u': self.undo()
 
 		self.display.restorescreen()
 
@@ -33,6 +37,8 @@ class TableEditor(object):
 		self.tFile.data[new_row][new_col] = new_val
 		self.display.draw()
 		self.display.prompt_screen(False)
+		# Add to history
+		self.history.append(copy.deepcopy(self.tFile))
 		
 	def add(self):
 		self.display.prompt_screen(True)
@@ -63,6 +69,8 @@ class TableEditor(object):
 
 		self.display.draw()
 		self.display.prompt_screen(False)
+		# Add to history
+		self.history.append(copy.deepcopy(self.tFile))
 
 	def remove(self):
 		self.display.prompt_screen(True)
@@ -78,3 +86,17 @@ class TableEditor(object):
 
 		self.display.draw()
 		self.display.prompt_screen(False)
+		# Add to history
+		self.history.append(copy.deepcopy(self.tFile))
+
+	def undo(self):
+		# If is the first, can't undo
+		if len(self.history) > 1:
+			# history list shape:
+			# [1 2 3 ... a-2 a-1 a] (a the actual state)
+			# pop a and put a-1
+			self.history.pop()
+			self.tFile = self.history[-1]
+			self.display.tFile = self.history[-1]
+			# Print again
+			self.display.draw()
