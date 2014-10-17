@@ -4,6 +4,8 @@
 # 
 # 
 
+import sys
+
 class tableFile:
 
 	# Constructor: Receives filename
@@ -26,8 +28,15 @@ class tableFile:
 	def setMaxSize(self):
 		maxString = []
 
+		# Check if there is the same number of columns in each line
+		colNum = len(self.data[0]);
+
 		# Get max of each line
 		for i in range(len(self.data)):
+			# Wrong number
+			if colNum != len(self.data[i]):
+				print "Not the same number of columns"
+				sys.exit()
 			maxString.append(max(self.data[i], key = len))
 		
 		# Get total max
