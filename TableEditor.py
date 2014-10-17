@@ -19,6 +19,8 @@ class TableEditor(object):
 			c = chr(c)
 			if c == 'q': break
 			elif c == 'c': self.change()
+			elif c == 'a': self.add()
+			elif c == 'd': self.remove()
 			elif c == 's': self.tFile.writeFile()
 
 		self.display.restorescreen()
@@ -32,3 +34,47 @@ class TableEditor(object):
 		self.display.draw()
 		self.display.prompt_screen(False)
 		
+	def add(self):
+		self.display.prompt_screen(True)
+		self.display.screen.addstr(curses.LINES - 1, 0, "Enter r or c for row/column, then r/c number, then data: ")
+		response = self.display.screen.getstr().split()
+		newrow=[]
+		newcol=[]
+
+		if response[0] == 'r':
+			for cols in range(len(self.tFile.data[0])):
+				newrow.append(response[cols+2])
+
+			if int(response[1]) > len(self.tFile.data):
+				self.tFile.data.append(newrow)
+			else:
+				self.tFile.data.insert(int(response[1]),newrow)
+
+		elif response[0] == 'c':
+			for rows in range(len(self.tFile.data)):
+				newcol.append(response[rows+2])
+
+			if int(response[1]) > len(self.tFile.data[0]):
+				for r in range(len(self.tFile.data)):
+					self.tFile.data[r].append(newcol[r])
+			else:
+				for r in range(len(self.tFile.data)):
+					self.tFile.data[r].insert(int(response[1])-1,newcol[r])
+
+		self.display.draw()
+		self.display.prompt_screen(False)
+
+	def remove(self):
+		self.display.prompt_screen(True)
+		self.display.screen.addstr(curses.LINES - 1, 0, "Enter r or c for row/colum, then r/c number you want to remove: ")
+		response = self.display.screen.getstr().split()
+		
+		if response[0] == 'r':
+			self.tFile.data.pop(int(response[1]))
+
+		elif response[0] == 'c':
+			for rows in range(len(self.tFile.data)):
+				self.tFile.data[rows].pop(int(response[1]))
+
+		self.display.draw()
+		self.display.prompt_screen(False)
