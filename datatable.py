@@ -23,6 +23,7 @@ def main():
 		tFile = tableFile.tableFile(sys.argv[1])
 	except:
 		print "Usage:\npython datatable.py <filename>"
+		return
 		
 	# Run editor
 	#tEditor = tableEditor(tFile)
