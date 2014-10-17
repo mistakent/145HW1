@@ -15,8 +15,7 @@
 # 'q': Quit program.
 
 import sys, traceback, curses
-import tableFile
-import TableDisplayer
+import tableFile, TableEditor, TableDisplayer
 
 #restores terminal screen on any exception below
 def restorescreen():
@@ -34,19 +33,16 @@ def main():
 	except:
 		print "Usage:\npython datatable.py <filename>"
 		return
-	
+
+	# Run editor
 	try:
-		tDisplayer = TableDisplayer.TableDisplayer(tFile.data)
-		tDisplayer.display()
-		sys.stdin.read(1)
-		restorescreen()
+		tDisplayer = TableDisplayer.TableDisplayer(tFile)
+		tEditor = TableEditor.TableEditor(tFile, tDisplayer)
+		tEditor.run()
 	except:
 		restorescreen()
 		traceback.print_exc()
 		return
-
-	# Run editor
-	#tEditor = tableEditor(tFile)
 	
 # Run main
 if __name__ == '__main__':
